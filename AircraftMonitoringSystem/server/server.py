@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
 import os
 from pathlib import Path
 
@@ -10,7 +9,6 @@ from flask import Flask, jsonify, request, send_file
 app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_FILE = BASE_DIR / 'flight_data.json'
 SCHEMA_FILE = BASE_DIR.parent / 'database' / 'schema.sql'
 
 
@@ -78,16 +76,17 @@ def index():
 
 @app.route('/flight', methods=['GET'])
 def get_flight():
-    flight_number = request.args.get('flight_number', '').strip() or os.getenv('DEFAULT_FLIGHT_NUMBER', 'AB1234')
+    flight_number = request.args.get('flight_number', '').strip()
+    if not flight_number:
+        return jsonify({'error': 'flight_number is required'}), 400
 
     initialize_database()
 
     try:
         data = get_flight_by_number(flight_number)
     except Exception as exc:
-        app.logger.warning('Falling back to JSON data because PostgreSQL is unavailable: %s', exc)
-        with open(DATA_FILE, 'r', encoding='utf-8') as file:
-            data = json.load(file)
+        app.logger.exception('Unable to load flight data from PostgreSQL: %s', exc)
+        return jsonify({'error': 'Unable to load flight data from the database'}), 503
 
     if data is None:
         return jsonify({'error': f'No flight found for {flight_number}'}), 404
