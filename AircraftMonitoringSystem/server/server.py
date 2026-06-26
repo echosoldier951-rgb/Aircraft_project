@@ -4,21 +4,25 @@ import os
 from pathlib import Path
 
 import psycopg2
-from flask import Flask, jsonify, request, send_file
+from dotenv import load_dotenv
+from flask import Flask, request, send_file
+
+# Load variables from .env
+load_dotenv()
 
 app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
-SCHEMA_FILE = BASE_DIR.parent / 'database' / 'schema.sql'
+SCHEMA_FILE = BASE_DIR.parent / "database" / "schema.sql"
 
 
 def get_db_connection():
     return psycopg2.connect(
-        host=os.getenv('DB_HOST', 'localhost'),
-        port=os.getenv('DB_PORT', '5432'),
-        dbname=os.getenv('DB_NAME', 'aircraft_monitoring'),
-        user=os.getenv('DB_USER', 'postgres'),
-        password=os.getenv('DB_PASSWORD', 'postgres'),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432"),
+        dbname=os.getenv("DB_NAME", "aircraft_monitoring"),
+        user=os.getenv("DB_USER", "postgres"),
+        password=os.getenv("DB_PASSWORD"),
     )
 
 
@@ -29,12 +33,11 @@ def initialize_database():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                schema_sql = SCHEMA_FILE.read_text(encoding='utf-8')
-                for statement in [stmt.strip() for stmt in schema_sql.split(';') if stmt.strip()]:
-                    cursor.execute(statement)
+                schema_sql = SCHEMA_FILE.read_text(encoding="utf-8")
+                cursor.execute(schema_sql)
             connection.commit()
     except Exception as exc:
-        app.logger.warning('PostgreSQL initialization skipped: %s', exc)
+        app.logger.warning("PostgreSQL initialization skipped: %s", exc)
 
 
 def get_flight_by_number(flight_number: str):
@@ -54,45 +57,46 @@ def get_flight_by_number(flight_number: str):
                 """,
                 (flight_number,),
             )
+
             row = cursor.fetchone()
 
     if row is None:
         return None
 
     return {
-        'Aircraft Status': row[1],
-        'Passenger Boarding Number': row[2],
-        'Fueling': row[3],
-        'Door State': row[4],
-        'Push Back Time': row[5],
-        'Flight number': row[0],
+        "Aircraft Status": row[1],
+        "Passenger Boarding Number": row[2],
+        "Fueling": row[3],
+        "Door State": row[4],
+        "Push Back Time": row[5],
+        "Flight Number": row[0],
     }
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def index():
-    return send_file(BASE_DIR / 'flight_dashboard.html')
+    return send_file(BASE_DIR / "flight_dashboard.html")
 
 
-@app.route('/flight', methods=['GET'])
+@app.route("/flight", methods=["GET"])
 def get_flight():
-    flight_number = request.args.get('flight_number', '').strip()
-    if not flight_number:
-        return jsonify({'error': 'flight_number is required'}), 400
+    flight_number = request.args.get("flight_number", "").strip()
 
-    initialize_database()
+    if not flight_number:
+        return "flight_number is required", 400
 
     try:
         data = get_flight_by_number(flight_number)
     except Exception as exc:
-        app.logger.exception('Unable to load flight data from PostgreSQL: %s', exc)
-        return jsonify({'error': 'Unable to load flight data from the database'}), 503
+        app.logger.exception("Unable to load flight data: %s", exc)
+        return "Unable to load flight data from the database", 503
 
     if data is None:
-        return jsonify({'error': f'No flight found for {flight_number}'}), 404
+        return f"No flight found for {flight_number}", 404
 
-    return jsonify(data), 200
+    return data, 200
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
+if __name__ == "__main__":
+    initialize_database()
+    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
