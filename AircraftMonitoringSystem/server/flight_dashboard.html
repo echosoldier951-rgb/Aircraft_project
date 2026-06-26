@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aircraft Flight Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .flight-request {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      padding: 0.55rem 0.75rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      min-width: 220px;
+      font-size: 1rem;
+    }
+
+    table {
+      width: 100%;
+      max-width: 700px;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    th, td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    th {
+      background: #e2e8f0;
+    }
+
+    .status {
+      color: #2563eb;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Aircraft Flight Data</h1>
+  <form id="flightForm" class="flight-request">
+    <label for="flightNumber">Flight Number</label>
+    <input id="flightNumber" name="flight_number" type="text" placeholder="AB1234" required>
+    <button id="getFlightBtn" type="submit">Get Flight</button>
+  </form>
+  <table id="flightTable">
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="2" class="status">Enter a flight number, then select Get Flight.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    const tableBody = document.querySelector('#flightTable tbody');
+    const flightForm = document.getElementById('flightForm');
+    const flightNumberInput = document.getElementById('flightNumber');
+
+    function renderRows(data) {
+      tableBody.innerHTML = '';
+
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        renderMessage('No data available.');
+        return;
+      }
+
+      Object.entries(data).forEach(([key, value]) => {
+        const row = document.createElement('tr');
+        const keyCell = document.createElement('td');
+        const valueCell = document.createElement('td');
+
+        keyCell.textContent = key;
+        valueCell.textContent = value;
+
+        row.appendChild(keyCell);
+        row.appendChild(valueCell);
+        tableBody.appendChild(row);
+      });
+    }
+
+    function renderMessage(message) {
+      tableBody.innerHTML = '';
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = 2;
+      cell.className = 'status';
+      cell.textContent = message;
+      row.appendChild(cell);
+      tableBody.appendChild(row);
+    }
+
+    async function loadFlightData(flightNumber) {
+      try {
+        renderMessage('Loading...');
+
+        const params = new URLSearchParams({ flight_number: flightNumber });
+        const response = await fetch(`/flight?${params.toString()}`);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Unable to load flight data.');
+        }
+
+        const data = await response.json();
+        renderRows(data);
+      } catch (error) {
+        renderMessage(error.message);
+      }
+    }
+
+    flightForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const flightNumber = flightNumberInput.value.trim();
+
+      if (!flightNumber) {
+        renderMessage('Enter a flight number first.');
+        return;
+      }
+
+      loadFlightData(flightNumber);
+    });
+  </script>
+</body>
+</html>
