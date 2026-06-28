@@ -33,6 +33,7 @@ def add_cors_headers(response):
 
 
 def get_db_connection():
+    # Create a new PostgreSQL connection using env vars (with safe local defaults).
     return psycopg2.connect(
         host=os.getenv("DB_HOST", "localhost"),
         port=os.getenv("DB_PORT", "5432"),
@@ -43,6 +44,7 @@ def get_db_connection():
 
 
 def initialize_database():
+    # Run schema.sql on startup so required tables exist.
     print("Schema path:", SCHEMA_FILE)
     print("Schema exists:", SCHEMA_FILE.exists())
 
@@ -76,6 +78,7 @@ def start_events_simulator():
         return
 
     try:
+        # Launch simulator as a separate Python process tied to this server lifecycle.
         events_simulator_process = subprocess.Popen(
             [sys.executable, str(EVENTS_SIMULATOR_FILE)],
             cwd=str(BASE_DIR.parent),
@@ -96,6 +99,7 @@ def stop_events_simulator():
         return
 
     try:
+        # Try graceful shutdown first, then force-kill if needed.
         events_simulator_process.terminate()
         events_simulator_process.wait(timeout=5)
     except Exception:
@@ -111,6 +115,7 @@ atexit.register(stop_events_simulator)
 
 
 def format_flight(row):
+    # Convert database tuple to the API response shape expected by dashboards.
     return {
         "Flight Number": row[0],
         "Aircraft Status": row[1],
@@ -122,6 +127,7 @@ def format_flight(row):
 
 
 def get_flight_by_number(flight_number):
+    # Fetch a single flight row by its unique flight number.
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(
@@ -147,6 +153,7 @@ def get_flight_by_number(flight_number):
 
 
 def update_flight(data):
+    # Update one flight and return the updated row.
     flight_number = str(data.get("Flight Number", "")).strip()
 
     if not flight_number:
@@ -192,6 +199,7 @@ def update_flight(data):
 
 
 def get_all_events():
+    # Return all events sorted by flight number for stable dashboard rendering.
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -209,6 +217,7 @@ def get_all_events():
 
 
 def upsert_event(data):
+    # Validate input and insert/update one event row.
     flight_number = str(data.get("Flight Number", "")).strip()
     autopilot_status = str(data.get("Autopilot Status", "")).strip().upper()
 
@@ -288,6 +297,7 @@ def events_dashboard():
 
 @app.route("/flight", methods=["GET"])
 def get_flight():
+    # Read one flight using query string: /flight?flight_number=AC101
     flight_number = request.args.get("flight_number", "").strip()
 
     if not flight_number:
@@ -306,6 +316,7 @@ def get_flight():
 
 @app.route("/updateFlightInfo", methods=["PUT"])
 def put_flight():
+    # Accept JSON body and persist the flight update.
     data = request.get_json(silent=True)
 
     if not data:
@@ -323,6 +334,7 @@ def put_flight():
     return jsonify(updated_data), 202
 @app.route("/flight-file", methods=["GET"])
 def get_flight_file():
+    # Legacy/file-based fallback endpoint (separate from database endpoints).
     try:
         with open(BASE_DIR / "flight_data.json", "r") as file:
             data = json.load(file)
@@ -336,6 +348,7 @@ def get_flight_file():
 
 @app.route("/events", methods=["GET"])
 def get_events():
+    # Convert raw DB rows to JSON-friendly dictionaries.
     try:
         rows = get_all_events()
 
@@ -357,6 +370,7 @@ def get_events():
 
 @app.route("/events-update", methods=["PUT", "POST"])
 def put_event_update():
+    # Update or insert event telemetry for a flight.
     data = request.get_json(silent=True)
 
     if not data:
@@ -385,6 +399,7 @@ def test():
 
 
 if __name__ == "__main__":
+    # One-time startup tasks before serving requests.
     initialize_database()
     start_events_simulator()
     app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)

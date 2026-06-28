@@ -12,6 +12,7 @@ REQUEST_TIMEOUT_SECONDS = 8
 
 def fetch_flight_numbers():
     """Pull flight identifiers from current events so updates target known rows."""
+    # Read current flights from the server to avoid sending unknown IDs.
     response = requests.get(EVENTS_URL, timeout=REQUEST_TIMEOUT_SECONDS)
     response.raise_for_status()
 
@@ -20,6 +21,7 @@ def fetch_flight_numbers():
 
 
 def simulate_event_payload(flight_number):
+    # Generate realistic random telemetry for one flight.
     autopilot_status = random.choice(["ON", "OFF"])
     cabin_pressure = round(random.uniform(9.5, 10.8), 2)
     wifi_usage = random.randint(20, 220)
@@ -33,6 +35,7 @@ def simulate_event_payload(flight_number):
 
 
 def push_event_update(payload):
+    # Send telemetry update to the API (upsert endpoint).
     response = requests.put(
         EVENTS_UPDATE_URL,
         json=payload,
@@ -43,6 +46,7 @@ def push_event_update(payload):
 
 
 def main():
+    # Infinite loop: fetch flights, choose one, post new random telemetry.
     print(f"Simulator started. Sending updates to {EVENTS_UPDATE_URL} every {SLEEP_SECONDS}s")
 
     while True:
@@ -50,6 +54,7 @@ def main():
             flight_numbers = fetch_flight_numbers()
 
             if not flight_numbers:
+                # Nothing to update yet; wait and retry.
                 print("No flights available in events. Retrying...")
                 time.sleep(SLEEP_SECONDS)
                 continue
