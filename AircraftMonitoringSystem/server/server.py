@@ -18,6 +18,14 @@ app = Flask(__name__, static_folder=str(BASE_DIR / "static"))
 SCHEMA_FILE = BASE_DIR.parent / "database" / "schema.sql"
 
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Access-Control-Allow-Methods"] = "GET, PUT, POST, DELETE, OPTIONS"
+    return response
+
+
 def get_db_connection():
     return psycopg2.connect(
         host=os.getenv("DB_HOST", "localhost"),
@@ -151,6 +159,11 @@ def index():
 @app.route("/ground-controller", methods=["GET"])
 def ground_controller():
     return send_file(BASE_DIR / "ground_controller.html")
+
+
+@app.route("/events-dashboard", methods=["GET"])
+def events_dashboard():
+    return send_file(BASE_DIR / "events_dashboard.html")
 
 
 @app.route("/flight", methods=["GET"])
