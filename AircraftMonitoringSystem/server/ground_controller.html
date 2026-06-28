@@ -138,8 +138,8 @@
           updatedData[key] = value;
         });
 
-        const response = await fetch('/flight', {
-          method: 'PUT',
+        const response = await fetch('/updateFlightInfo', {
+    method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
           },

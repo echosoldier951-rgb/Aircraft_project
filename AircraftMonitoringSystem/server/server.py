@@ -171,8 +171,7 @@ def get_flight():
 
     return jsonify(data), 200
 
-
-@app.route("/flight", methods=["PUT"])
+@app.route("/updateFlightInfo", methods=["PUT"])
 def put_flight():
     data = request.get_json(silent=True)
 
@@ -188,9 +187,7 @@ def put_flight():
     if updated_data is None:
         return jsonify({"error": "No matching flight found to update"}), 404
 
-    return jsonify(updated_data), 200
-
-
+    return jsonify(updated_data), 202
 @app.route("/flight-file", methods=["GET"])
 def get_flight_file():
     try:
