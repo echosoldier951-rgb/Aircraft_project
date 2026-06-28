@@ -3,90 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aircraft Flight Data</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-      background: #f4f7fb;
-      color: #1f2937;
-    }
-
-    button {
-      padding: 0.6rem 1rem;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 6px;
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    .edit-btn {
-      background: #16a34a;
-      margin-bottom: 0;
-    }
-
-    .save-btn {
-      margin-top: 1rem;
-      background: #dc2626;
-    }
-
-    .flight-request {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    label {
-      font-weight: bold;
-    }
-
-    input {
-      padding: 0.55rem 0.75rem;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      min-width: 220px;
-      font-size: 1rem;
-    }
-
-    table {
-      width: 100%;
-      max-width: 850px;
-      border-collapse: collapse;
-      background: white;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    th, td {
-      padding: 0.8rem 1rem;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-    }
-
-    th {
-      background: #e2e8f0;
-    }
-
-    .status {
-      color: #2563eb;
-      font-weight: bold;
-    }
-
-    .edit-input {
-      width: 100%;
-      min-width: 150px;
-    }
-  </style>
+  <title>Ground Controller - Aircraft Flight Data</title>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <h1>Aircraft Flight Data</h1>
+  <h1>Ground - Aircraft Flight Data</h1>
 
   <form id="flightForm" class="flight-request">
     <label for="flightNumber">Flight Number</label>
