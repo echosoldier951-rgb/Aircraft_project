@@ -70,4 +70,6 @@ Write-Host 'Initializing the database...'
 Write-Host 'Starting application processes...'
 Start-PythonScript -ScriptPath 'server/server.py' -DisplayName 'Flask server'
 Start-PythonScript -ScriptPath 'applications/events_simulator.py' -DisplayName 'Events simulator'
+Write-Host 'Waiting 8 seconds before starting Monitor poller...'
+Start-Sleep -Seconds 8
 Start-PythonScript -ScriptPath 'applications/monitor.py' -DisplayName 'Monitor poller'

@@ -20,6 +20,19 @@ app = Flask(
 )
 
 SCHEMA_FILE = BASE_DIR.parent / "database" / "schema.sql"
+LOG_PREFIX = "[Server]"
+
+
+def log_print(*args):
+    print(LOG_PREFIX, *args)
+
+
+def log_warning(message, *args):
+    app.logger.warning(f"{LOG_PREFIX} {message}", *args)
+
+
+def log_exception(message, *args):
+    app.logger.exception(f"{LOG_PREFIX} {message}", *args)
 
 
 @app.after_request
@@ -43,11 +56,11 @@ def get_db_connection():
 
 def initialize_database():
     # Run schema.sql on startup so required tables exist.
-    print("Schema path:", SCHEMA_FILE)
-    print("Schema exists:", SCHEMA_FILE.exists())
+    log_print("Schema path:", SCHEMA_FILE)
+    log_print("Schema exists:", SCHEMA_FILE.exists())
 
     if not SCHEMA_FILE.exists():
-        app.logger.warning("schema.sql not found at %s", SCHEMA_FILE)
+        log_warning("schema.sql not found at %s", SCHEMA_FILE)
         return
 
     try:
@@ -57,7 +70,7 @@ def initialize_database():
                 cursor.execute(schema_sql)
             connection.commit()
     except Exception as exc:
-        app.logger.warning("PostgreSQL initialization skipped: %s", exc)
+        log_warning("PostgreSQL initialization skipped: %s", exc)
 
 
 def format_flight(row):
@@ -310,7 +323,7 @@ def get_flight():
     try:
         data = get_flight_by_number(flight_number)
     except Exception as exc:
-        app.logger.exception("Unable to load flight data: %s", exc)
+        log_exception("Unable to load flight data: %s", exc)
         return jsonify({"error": "Unable to load flight data from database"}), 503
 
     if data is None:
@@ -329,7 +342,7 @@ def put_flight():
     try:
         updated_data = update_flight(data)
     except Exception as exc:
-        app.logger.exception("Unable to update flight data: %s", exc)
+        log_exception("Unable to update flight data: %s", exc)
         return jsonify({"error": "Unable to update flight data"}), 503
 
     if updated_data is None:
@@ -346,7 +359,7 @@ def get_flight_file():
         return jsonify(data), 200
 
     except Exception as exc:
-        app.logger.exception("Unable to load flight data: %s", exc)
+        log_exception("Unable to load flight data: %s", exc)
         return jsonify({"error": "Unable to load flight data"}), 500
 
 
@@ -368,7 +381,7 @@ def get_events():
         return jsonify(events), 200
 
     except Exception as exc:
-        app.logger.exception("Unable to load event data: %s", exc)
+        log_exception("Unable to load event data: %s", exc)
         return jsonify({"error": "Unable to load event data"}), 500
 
 
@@ -380,7 +393,7 @@ def get_monitor_data():
         monitor_data = [format_monitor_data(row) for row in rows]
         return jsonify(monitor_data), 200
     except Exception as exc:
-        app.logger.exception("Unable to load monitor data: %s", exc)
+        log_exception("Unable to load monitor data: %s", exc)
         return jsonify({"error": "Unable to load monitor data from database"}), 503
 
 
@@ -395,7 +408,7 @@ def put_event_update():
     try:
         updated_event, validation_error = upsert_event(data)
     except Exception as exc:
-        app.logger.exception("Unable to update event data: %s", exc)
+        log_exception("Unable to update event data: %s", exc)
         return jsonify({"error": "Unable to update event data"}), 503
 
     if validation_error:

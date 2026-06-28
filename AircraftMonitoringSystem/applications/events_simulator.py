@@ -15,6 +15,12 @@ DRIFT_INTERVAL_SECONDS = 10
 DRIFT_DURATION_SECONDS = 10
 LOOP_SLEEP_SECONDS = 1
 REQUEST_TIMEOUT_SECONDS = 8
+LOG_PREFIX = "[Simulator]"
+
+
+def log_message(message):
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    print(f"{timestamp} {LOG_PREFIX} {message}")
 
 
 def load_parameters():
@@ -151,24 +157,59 @@ def push_event_update(payload):
     return response.json()
 
 
+def align_all_flights(parameters):
+    flights = fetch_monitor_data()
+    if not flights:
+        raise ValueError("No flights available for initial alignment")
+
+    log_message(f"Starting initial alignment for {len(flights)} flights.")
+
+    for flight in flights:
+        payload = build_compliant_payload(flight, parameters)
+        updated = push_event_update(payload)
+        log_message(
+            f"Aligned {updated['Flight Number']} "
+            f"Autopilot={updated['Autopilot Status']} "
+            f"CabinPressure={updated['Cabin Pressure']} "
+            f"WiFiUsage={updated['WiFi Usage']}"
+        )
+
+    log_message("Initial alignment complete.")
+    return flights
+
+
 def main():
     parameters = load_parameters()
-    last_normal_update_at = 0.0
-    last_drift_change_at = time.monotonic()
     active_drift = None
 
-    print(
-        "Simulator started. "
+    log_message(
+        "Started. "
         f"Sending aligned updates to {EVENTS_UPDATE_URL}; "
         f"temporary drift begins every {DRIFT_INTERVAL_SECONDS}s"
     )
 
     while True:
         try:
+            align_all_flights(parameters)
+            break
+        except requests.RequestException as exc:
+            log_message(f"Initial alignment network/API error: {exc}. Retrying...")
+        except ValueError as exc:
+            log_message(f"Initial alignment blocked: {exc}. Retrying...")
+        except Exception as exc:
+            log_message(f"Initial alignment unexpected error: {exc}. Retrying...")
+
+        time.sleep(LOOP_SLEEP_SECONDS)
+
+    last_normal_update_at = time.monotonic()
+    last_drift_change_at = time.monotonic()
+
+    while True:
+        try:
             flights = fetch_monitor_data()
 
             if not flights:
-                print("No flights available in monitor data. Retrying...")
+                log_message("No flights available in monitor data. Retrying...")
                 time.sleep(LOOP_SLEEP_SECONDS)
                 continue
 
@@ -179,10 +220,8 @@ def main():
                 if drift_flight:
                     restored_payload = build_compliant_payload(drift_flight, parameters)
                     restored = push_event_update(restored_payload)
-                    print(
-                        "Restored",
-                        restored["Flight Number"],
-                        f"Field={active_drift['field']}",
+                    log_message(
+                        f"Restored {restored['Flight Number']} Field={active_drift['field']}"
                     )
                 active_drift = None
                 last_drift_change_at = now
@@ -197,10 +236,8 @@ def main():
                         "field": drift_field,
                         "started_at": now,
                     }
-                    print(
-                        "Drifted",
-                        drifted["Flight Number"],
-                        f"Field={drift_field}",
+                    log_message(
+                        f"Drifted {drifted['Flight Number']} Field={drift_field}"
                     )
 
             if now - last_normal_update_at >= NORMAL_UPDATE_SECONDS:
@@ -213,21 +250,20 @@ def main():
                     payload = build_compliant_payload(selected_flight, parameters)
                     updated = push_event_update(payload)
 
-                    print(
-                        "Updated",
-                        updated["Flight Number"],
-                        f"Autopilot={updated['Autopilot Status']}",
-                        f"CabinPressure={updated['Cabin Pressure']}",
-                        f"WiFiUsage={updated['WiFi Usage']}",
+                    log_message(
+                        f"Updated {updated['Flight Number']} "
+                        f"Autopilot={updated['Autopilot Status']} "
+                        f"CabinPressure={updated['Cabin Pressure']} "
+                        f"WiFiUsage={updated['WiFi Usage']}"
                     )
 
                 last_normal_update_at = now
         except requests.RequestException as exc:
-            print(f"Network/API error: {exc}. Retrying...")
+            log_message(f"Network/API error: {exc}. Retrying...")
         except ValueError as exc:
-            print(f"Simulator configuration error: {exc}. Retrying...")
+            log_message(f"Configuration error: {exc}. Retrying...")
         except Exception as exc:
-            print(f"Unexpected simulator error: {exc}. Retrying...")
+            log_message(f"Unexpected error: {exc}. Retrying...")
 
         time.sleep(LOOP_SLEEP_SECONDS)
 
