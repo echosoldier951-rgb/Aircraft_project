@@ -6,30 +6,41 @@ from pathlib import Path
 
 import requests
 
+# Base API URL (can be overridden by environment variable).
 SERVER_BASE_URL = os.getenv("SERVER_BASE_URL", "http://127.0.0.1:5000")
+# Read current monitor rows from here.
 MONITOR_DATA_URL = f"{SERVER_BASE_URL}/monitor-data"
+# Send simulated updates to this endpoint.
 EVENTS_UPDATE_URL = f"{SERVER_BASE_URL}/events-update"
+# Shared config file with expected ranges and status rules.
 PARAMETERS_FILE = Path(__file__).resolve().parents[1] / "parameters.json"
+# Normal healthy update interval.
 NORMAL_UPDATE_SECONDS = 5
+# How often to introduce a temporary "bad" value.
 DRIFT_INTERVAL_SECONDS = 10
+# How long that temporary drift should stay active.
 DRIFT_DURATION_SECONDS = 10
+# Main loop sleep to avoid busy waiting.
 LOOP_SLEEP_SECONDS = 1
 REQUEST_TIMEOUT_SECONDS = 8
 LOG_PREFIX = "[Simulator]"
 
 
 def log_message(message):
+    # Add timestamp to each log line for easier troubleshooting.
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
     print(f"{timestamp} {LOG_PREFIX} {message}")
 
 
 def load_parameters():
+    # Load all simulator rules from parameters.json.
     with open(PARAMETERS_FILE, "r", encoding="utf-8") as file:
         return json.load(file)
 
 
 def fetch_monitor_data():
     """Pull full joined monitoring rows so updates can respect flight status."""
+    # Get current flight data so generated values match each flight's phase.
     response = requests.get(MONITOR_DATA_URL, timeout=REQUEST_TIMEOUT_SECONDS)
     response.raise_for_status()
 
@@ -41,6 +52,7 @@ def fetch_monitor_data():
 
 
 def build_cabin_pressure(parameters):
+    # Generate a safe in-range cabin pressure value.
     expected_range = parameters["Cabin Pressure"]["expected_range"]
     minimum = float(expected_range["min"])
     maximum = float(expected_range["max"])
@@ -54,6 +66,7 @@ def build_cabin_pressure(parameters):
 
 
 def build_wifi_usage(simple_status, parameters):
+    # Build WiFi usage based on the rule for the given flight status.
     expected_by_status = parameters["WiFi Usage"]["expected_by_flight_status"]
     expected_rule = expected_by_status.get(simple_status)
 
@@ -67,6 +80,7 @@ def build_wifi_usage(simple_status, parameters):
 
 
 def build_compliant_payload(flight_data, parameters):
+    # Create an update payload that follows all rules (no alert expected).
     simple_status = flight_data["Simple Status"]
     autopilot_expected = parameters["Autopilot Status"]["expected_by_flight_status"]
 
@@ -80,6 +94,7 @@ def build_compliant_payload(flight_data, parameters):
 
 
 def get_drift_candidates(flight_data, parameters):
+    # Decide which fields are valid choices for temporary drift.
     simple_status = flight_data["Simple Status"]
     candidates = ["Cabin Pressure"]
 
@@ -95,6 +110,7 @@ def get_drift_candidates(flight_data, parameters):
 
 
 def build_out_of_spec_payload(flight_data, parameters):
+    # Start from a good payload, then break one rule on purpose.
     payload = build_compliant_payload(flight_data, parameters)
     simple_status = flight_data["Simple Status"]
     drift_field = random.choice(get_drift_candidates(flight_data, parameters))
@@ -123,6 +139,7 @@ def build_out_of_spec_payload(flight_data, parameters):
 
 
 def select_flight(flights, excluded_flight_number=None):
+    # Pick a random flight, optionally excluding one flight number.
     eligible_flights = [
         flight for flight in flights
         if flight.get("Flight Number") and flight.get("Flight Number") != excluded_flight_number
@@ -135,6 +152,7 @@ def select_flight(flights, excluded_flight_number=None):
 
 
 def find_flight(flights, flight_number):
+    # Find one flight object by its flight number.
     for flight in flights:
         if flight.get("Flight Number") == flight_number:
             return flight
@@ -143,6 +161,7 @@ def find_flight(flights, flight_number):
 
 
 def simulate_event_payload(flight_number):
+    # Kept only as a placeholder for old API usage.
     raise NotImplementedError("Use build_compliant_payload with full flight data instead")
 
 
@@ -158,6 +177,7 @@ def push_event_update(payload):
 
 
 def align_all_flights(parameters):
+    # First, make every flight compliant so simulation starts from a clean state.
     flights = fetch_monitor_data()
     if not flights:
         raise ValueError("No flights available for initial alignment")
@@ -179,6 +199,7 @@ def align_all_flights(parameters):
 
 
 def main():
+    # Main simulator loop: align first, then alternate between normal updates and drift.
     parameters = load_parameters()
     active_drift = None
 
@@ -190,6 +211,7 @@ def main():
 
     while True:
         try:
+            # Keep trying until initial alignment succeeds.
             align_all_flights(parameters)
             break
         except requests.RequestException as exc:
@@ -216,6 +238,7 @@ def main():
             now = time.monotonic()
 
             if active_drift and now - active_drift["started_at"] >= DRIFT_DURATION_SECONDS:
+                # Drift window ended: restore the drifted flight to compliant values.
                 drift_flight = find_flight(flights, active_drift["flight_number"])
                 if drift_flight:
                     restored_payload = build_compliant_payload(drift_flight, parameters)
@@ -227,6 +250,7 @@ def main():
                 last_drift_change_at = now
 
             if not active_drift and now - last_drift_change_at >= DRIFT_INTERVAL_SECONDS:
+                # Start a new temporary drift on one random flight.
                 drift_flight = select_flight(flights)
                 if drift_flight:
                     drift_payload, drift_field = build_out_of_spec_payload(drift_flight, parameters)
@@ -241,6 +265,7 @@ def main():
                     )
 
             if now - last_normal_update_at >= NORMAL_UPDATE_SECONDS:
+                # Send a normal compliant update to a random non-drift flight.
                 excluded_flight_number = None
                 if active_drift is not None:
                     excluded_flight_number = active_drift["flight_number"]
