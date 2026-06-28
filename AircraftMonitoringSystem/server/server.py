@@ -2,9 +2,6 @@
 
 import os
 import json
-import atexit
-import subprocess
-import sys
 from pathlib import Path
 
 import psycopg2
@@ -23,9 +20,6 @@ app = Flask(
 )
 
 SCHEMA_FILE = BASE_DIR.parent / "database" / "schema.sql"
-EVENTS_SIMULATOR_FILE = BASE_DIR.parent / "applications" / "events_simulator.py"
-
-events_simulator_process = None
 
 
 @app.after_request
@@ -66,58 +60,6 @@ def initialize_database():
         app.logger.warning("PostgreSQL initialization skipped: %s", exc)
 
 
-def start_events_simulator():
-    global events_simulator_process
-
-    if events_simulator_process is not None:
-        return
-
-    if not EVENTS_SIMULATOR_FILE.exists():
-        app.logger.warning("events_simulator.py not found at %s", EVENTS_SIMULATOR_FILE)
-        return
-
-    auto_start = os.getenv("AUTO_START_EVENTS_SIM", "true").strip().lower()
-    if auto_start in {"0", "false", "no", "off"}:
-        app.logger.info("AUTO_START_EVENTS_SIM is disabled; skipping simulator launch")
-        return
-
-    try:
-        # Launch simulator as a separate Python process tied to this server lifecycle.
-        events_simulator_process = subprocess.Popen(
-            [sys.executable, str(EVENTS_SIMULATOR_FILE)],
-            cwd=str(BASE_DIR.parent),
-        )
-        app.logger.info("Started events simulator with pid=%s", events_simulator_process.pid)
-    except Exception as exc:
-        app.logger.warning("Unable to start events simulator: %s", exc)
-
-
-def stop_events_simulator():
-    global events_simulator_process
-
-    if events_simulator_process is None:
-        return
-
-    if events_simulator_process.poll() is not None:
-        events_simulator_process = None
-        return
-
-    try:
-        # Try graceful shutdown first, then force-kill if needed.
-        events_simulator_process.terminate()
-        events_simulator_process.wait(timeout=5)
-    except Exception:
-        try:
-            events_simulator_process.kill()
-        except Exception:
-            pass
-    finally:
-        events_simulator_process = None
-
-
-atexit.register(stop_events_simulator)
-
-
 def format_flight(row):
     # Convert database tuple to the API response shape expected by dashboards.
     push_back_time = row[6]
@@ -130,6 +72,24 @@ def format_flight(row):
         "Fueling": row[4],
         "Door State": row[5],
         "Push Back Time": push_back_time.strftime("%H:%M") if push_back_time else None,
+    }
+
+
+def format_monitor_data(row):
+    # Convert joined flight/event tuples into one flat monitoring payload.
+    push_back_time = row[6]
+
+    return {
+        "Flight Number": row[0],
+        "Simple Status": row[1],
+        "Detailed Status": row[2],
+        "Passenger Boarding Number": row[3],
+        "Fueling": row[4],
+        "Door State": row[5],
+        "Push Back Time": push_back_time.strftime("%H:%M") if push_back_time else None,
+        "Autopilot Status": row[7],
+        "Cabin Pressure": float(row[8]),
+        "WiFi Usage": row[9],
     }
 
 
@@ -227,6 +187,34 @@ def get_all_events():
                 FROM events
                 ORDER BY flight_number
             """)
+            rows = cursor.fetchall()
+
+    return rows
+
+
+def get_all_monitor_data():
+    # Return joined flight and event data sorted by flight number.
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    f.flight_number,
+                    f.simple_status,
+                    f.detailed_status,
+                    f.passenger_boarding_number,
+                    f.fueling,
+                    f.door_state,
+                    f.push_back_time,
+                    e.autopilot_status,
+                    e.cabin_pressure,
+                    e.wifi_usage
+                FROM flights f
+                INNER JOIN events e
+                    ON f.flight_number = e.flight_number
+                ORDER BY f.flight_number
+                """
+            )
             rows = cursor.fetchall()
 
     return rows
@@ -384,6 +372,18 @@ def get_events():
         return jsonify({"error": "Unable to load event data"}), 500
 
 
+@app.route("/monitor-data", methods=["GET"])
+def get_monitor_data():
+    # Return full joined flight and event data for monitoring clients.
+    try:
+        rows = get_all_monitor_data()
+        monitor_data = [format_monitor_data(row) for row in rows]
+        return jsonify(monitor_data), 200
+    except Exception as exc:
+        app.logger.exception("Unable to load monitor data: %s", exc)
+        return jsonify({"error": "Unable to load monitor data from database"}), 503
+
+
 @app.route("/events-update", methods=["PUT", "POST"])
 def put_event_update():
     # Update or insert event telemetry for a flight.
@@ -418,5 +418,4 @@ def test():
 if __name__ == "__main__":
     # One-time startup tasks before serving requests.
     initialize_database()
-    start_events_simulator()
     app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
