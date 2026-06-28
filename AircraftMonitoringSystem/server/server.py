@@ -2,6 +2,9 @@
 
 import os
 import json
+import atexit
+import subprocess
+import sys
 from pathlib import Path
 
 import psycopg2
@@ -16,6 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent
 app = Flask(__name__, static_folder=str(BASE_DIR / "static"))
 
 SCHEMA_FILE = BASE_DIR.parent / "database" / "schema.sql"
+EVENTS_SIMULATOR_FILE = BASE_DIR.parent / "clients" / "events_simulator.py"
+
+events_simulator_process = None
 
 
 @app.after_request
@@ -52,6 +58,56 @@ def initialize_database():
             connection.commit()
     except Exception as exc:
         app.logger.warning("PostgreSQL initialization skipped: %s", exc)
+
+
+def start_events_simulator():
+    global events_simulator_process
+
+    if events_simulator_process is not None:
+        return
+
+    if not EVENTS_SIMULATOR_FILE.exists():
+        app.logger.warning("events_simulator.py not found at %s", EVENTS_SIMULATOR_FILE)
+        return
+
+    auto_start = os.getenv("AUTO_START_EVENTS_SIM", "true").strip().lower()
+    if auto_start in {"0", "false", "no", "off"}:
+        app.logger.info("AUTO_START_EVENTS_SIM is disabled; skipping simulator launch")
+        return
+
+    try:
+        events_simulator_process = subprocess.Popen(
+            [sys.executable, str(EVENTS_SIMULATOR_FILE)],
+            cwd=str(BASE_DIR.parent),
+        )
+        app.logger.info("Started events simulator with pid=%s", events_simulator_process.pid)
+    except Exception as exc:
+        app.logger.warning("Unable to start events simulator: %s", exc)
+
+
+def stop_events_simulator():
+    global events_simulator_process
+
+    if events_simulator_process is None:
+        return
+
+    if events_simulator_process.poll() is not None:
+        events_simulator_process = None
+        return
+
+    try:
+        events_simulator_process.terminate()
+        events_simulator_process.wait(timeout=5)
+    except Exception:
+        try:
+            events_simulator_process.kill()
+        except Exception:
+            pass
+    finally:
+        events_simulator_process = None
+
+
+atexit.register(stop_events_simulator)
 
 
 def format_flight(row):
@@ -145,10 +201,74 @@ def get_all_events():
                     cabin_pressure,
                     wifi_usage
                 FROM events
+                ORDER BY flight_number
             """)
             rows = cursor.fetchall()
 
     return rows
+
+
+def upsert_event(data):
+    flight_number = str(data.get("Flight Number", "")).strip()
+    autopilot_status = str(data.get("Autopilot Status", "")).strip().upper()
+
+    try:
+        cabin_pressure = float(data.get("Cabin Pressure"))
+    except (TypeError, ValueError):
+        return None, "Cabin Pressure must be a valid number"
+
+    try:
+        wifi_usage = int(data.get("WiFi Usage"))
+    except (TypeError, ValueError):
+        return None, "WiFi Usage must be a valid integer"
+
+    if not flight_number:
+        return None, "Flight Number is required"
+
+    if autopilot_status not in {"ON", "OFF"}:
+        return None, "Autopilot Status must be ON or OFF"
+
+    if wifi_usage < 0:
+        return None, "WiFi Usage must be zero or greater"
+
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO events (
+                    flight_number,
+                    autopilot_status,
+                    cabin_pressure,
+                    wifi_usage
+                )
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (flight_number) DO UPDATE SET
+                    autopilot_status = EXCLUDED.autopilot_status,
+                    cabin_pressure = EXCLUDED.cabin_pressure,
+                    wifi_usage = EXCLUDED.wifi_usage
+                RETURNING
+                    flight_number,
+                    autopilot_status,
+                    cabin_pressure,
+                    wifi_usage
+                """,
+                (
+                    flight_number,
+                    autopilot_status,
+                    cabin_pressure,
+                    wifi_usage,
+                ),
+            )
+
+            row = cursor.fetchone()
+            connection.commit()
+
+    return {
+        "Flight Number": row[0],
+        "Autopilot Status": row[1],
+        "Cabin Pressure": float(row[2]),
+        "WiFi Usage": row[3],
+    }, None
 
 
 @app.route("/client", methods=["GET"])
@@ -235,6 +355,25 @@ def get_events():
         return jsonify({"error": "Unable to load event data"}), 500
 
 
+@app.route("/events-update", methods=["PUT", "POST"])
+def put_event_update():
+    data = request.get_json(silent=True)
+
+    if not data:
+        return jsonify({"error": "JSON body is required"}), 400
+
+    try:
+        updated_event, validation_error = upsert_event(data)
+    except Exception as exc:
+        app.logger.exception("Unable to update event data: %s", exc)
+        return jsonify({"error": "Unable to update event data"}), 503
+
+    if validation_error:
+        return jsonify({"error": validation_error}), 400
+
+    return jsonify(updated_event), 200
+
+
 # Debug route for CSS
 @app.route("/test")
 def test():
@@ -247,4 +386,5 @@ def test():
 
 if __name__ == "__main__":
     initialize_database()
+    start_events_simulator()
     app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)

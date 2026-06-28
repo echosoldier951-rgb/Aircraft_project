@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events - Aircraft Flight Data</title>
-  <!-- Relative paths allow this to load correctly both from Flask and VS Code Live Server -->
-  <link rel="stylesheet" href="static/styles.css">
-  <link rel="stylesheet" href="./static/styles.css">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
@@ -84,8 +81,6 @@
     // Fetches in-flight events from the server
     async function loadEventsData() {
       try {
-        renderMessage('Loading...');
-        
         // Dynamically point to the Flask server at port 5000 if served from a different origin (e.g. Live Server on port 5500)
         const serverUrl = window.location.port === '5000' ? '/events' : 'http://127.0.0.1:5000/events';
 
@@ -100,8 +95,9 @@
       }
     }
 
-    // Run loader when window content loads
+    // Initial load plus 5-second polling for real-time refresh.
     loadEventsData();
+    setInterval(loadEventsData, 5000);
   </script>
 </body>
 </html>
