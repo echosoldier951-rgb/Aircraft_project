@@ -1,0 +1,31 @@
+{
+    "Cabin Pressure": {
+        "unit": "PSI",
+        "expected_range": {
+            "min": 10.9,
+            "max": 14.7
+        },
+        "alert_condition_description": "Alert when cabin pressure is below 10.9 PSI or above 14.7 PSI."
+    },
+    "Autopilot Status": {
+        "expected_by_flight_status": {
+            "Parked": "OFF",
+            "Taxiing": "OFF",
+            "Takeoff/Landing": "OFF",
+            "Cruise": "ON"
+        },
+        "normalization": {
+            "on_values": ["ON", "1", 1, true],
+            "off_values": ["OFF", "0", 0, false]
+        },
+        "alert_condition_description": "Alert when autopilot_status does not match the expected value for the flight's simple_status. Cruise must be ON. Parked, Taxiing, and Takeoff/Landing must be OFF."
+    },
+    "WiFi Usage": {
+        "unit": "count",
+        "expected_by_flight_status": {
+            "Cruise": "greater than 0",
+            "Parked": "equal to 0"
+        },
+        "alert_condition_description": "Alert when WiFi Usage is 0 during Cruise, or when WiFi Usage is greater than 0 while Parked."
+    }
+}

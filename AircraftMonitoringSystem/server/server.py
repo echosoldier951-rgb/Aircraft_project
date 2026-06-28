@@ -120,13 +120,16 @@ atexit.register(stop_events_simulator)
 
 def format_flight(row):
     # Convert database tuple to the API response shape expected by dashboards.
+    push_back_time = row[6]
+
     return {
         "Flight Number": row[0],
-        "Aircraft Status": row[1],
-        "Passenger Boarding Number": row[2],
-        "Fueling": row[3],
-        "Door State": row[4],
-        "Push Back Time": row[5],
+        "Simple Status": row[1],
+        "Detailed Status": row[2],
+        "Passenger Boarding Number": row[3],
+        "Fueling": row[4],
+        "Door State": row[5],
+        "Push Back Time": push_back_time.strftime("%H:%M") if push_back_time else None,
     }
 
 
@@ -138,7 +141,8 @@ def get_flight_by_number(flight_number):
                 """
                 SELECT
                     flight_number,
-                    aircraft_status,
+                    simple_status,
+                    detailed_status,
                     passenger_boarding_number,
                     fueling,
                     door_state,
@@ -159,6 +163,11 @@ def get_flight_by_number(flight_number):
 def update_flight(data):
     # Update one flight and return the updated row.
     flight_number = str(data.get("Flight Number", "")).strip()
+    simple_status = data.get("Simple Status")
+    if simple_status is None:
+        simple_status = data.get("Aircraft Status")
+
+    detailed_status = data.get("Detailed Status")
 
     if not flight_number:
         return None
@@ -169,7 +178,8 @@ def update_flight(data):
                 """
                 UPDATE flights
                 SET
-                    aircraft_status = %s,
+                    simple_status = COALESCE(%s, simple_status),
+                    detailed_status = COALESCE(%s, detailed_status),
                     passenger_boarding_number = %s,
                     fueling = %s,
                     door_state = %s,
@@ -177,14 +187,16 @@ def update_flight(data):
                 WHERE flight_number = %s
                 RETURNING
                     flight_number,
-                    aircraft_status,
+                    simple_status,
+                    detailed_status,
                     passenger_boarding_number,
                     fueling,
                     door_state,
                     push_back_time
                 """,
                 (
-                    data.get("Aircraft Status"),
+                    simple_status,
+                    detailed_status,
                     data.get("Passenger Boarding Number"),
                     data.get("Fueling"),
                     data.get("Door State"),
