@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events - Aircraft Flight Data</title>
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
   <h1>In-Flight Events Data</h1>
@@ -28,7 +28,6 @@
   <script>
     const tableBody = document.querySelector('#eventsTable tbody');
 
-    // Renders list of events into the table
     function renderRows(events) {
       tableBody.innerHTML = '';
 
@@ -46,10 +45,9 @@
         const wifiCell = document.createElement('td');
 
         flightCell.textContent = event['Flight Number'] || 'N/A';
-        
+
         const autopilotStatus = event['Autopilot Status'] || 'N/A';
         autopilotCell.textContent = autopilotStatus;
-        // Highlight active status matching original styling convention
         if (autopilotStatus.toUpperCase() === 'ON') {
           autopilotCell.className = 'status';
         }
@@ -66,7 +64,6 @@
       });
     }
 
-    // Displays helper message inside table row
     function renderMessage(message) {
       tableBody.innerHTML = '';
       const row = document.createElement('tr');
@@ -78,10 +75,8 @@
       tableBody.appendChild(row);
     }
 
-    // Fetches in-flight events from the server
     async function loadEventsData() {
       try {
-        // Dynamically point to the Flask server at port 5000 if served from a different origin (e.g. Live Server on port 5500)
         const serverUrl = window.location.port === '5000' ? '/events' : 'http://127.0.0.1:5000/events';
 
         const response = await fetch(serverUrl);
@@ -95,7 +90,6 @@
       }
     }
 
-    // Initial load plus 5-second polling for real-time refresh.
     loadEventsData();
     setInterval(loadEventsData, 5000);
   </script>

@@ -9,17 +9,21 @@ from pathlib import Path
 
 import psycopg2
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, render_template, request, send_file
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 
-# IMPORTANT: Explicitly tell Flask where static folder is
-app = Flask(__name__, static_folder=str(BASE_DIR / "static"))
+# Use Flask's standard project layout: templates/ for HTML and static/ for assets.
+app = Flask(
+    __name__,
+    template_folder=str(BASE_DIR / "templates"),
+    static_folder=str(BASE_DIR / "static"),
+)
 
 SCHEMA_FILE = BASE_DIR.parent / "database" / "schema.sql"
-EVENTS_SIMULATOR_FILE = BASE_DIR.parent / "clients" / "events_simulator.py"
+EVENTS_SIMULATOR_FILE = BASE_DIR.parent / "applications" / "events_simulator.py"
 
 events_simulator_process = None
 
@@ -282,17 +286,17 @@ def upsert_event(data):
 
 @app.route("/client", methods=["GET"])
 def index():
-    return send_file(BASE_DIR / "client_dashboard.html")
+    return render_template("client_dashboard.html")
 
 
 @app.route("/ground-controller", methods=["GET"])
 def ground_controller():
-    return send_file(BASE_DIR / "ground_controller.html")
+    return render_template("ground_controller.html")
 
 
 @app.route("/events-dashboard", methods=["GET"])
 def events_dashboard():
-    return send_file(BASE_DIR / "events_dashboard.html")
+    return render_template("events_dashboard.html")
 
 
 @app.route("/flight", methods=["GET"])
@@ -393,8 +397,9 @@ def put_event_update():
 def test():
     return {
         "BASE_DIR": str(BASE_DIR),
+        "TEMPLATES_EXISTS": (BASE_DIR / "templates").exists(),
         "STATIC_EXISTS": (BASE_DIR / "static").exists(),
-        "CSS_EXISTS": (BASE_DIR / "static" / "styles.css").exists()
+        "CSS_EXISTS": (BASE_DIR / "static" / "css" / "main.css").exists()
     }
 
 
