@@ -16,12 +16,18 @@ POLL_INTERVAL_SECONDS = 1
 # Maximum wait time for API requests.
 REQUEST_TIMEOUT_SECONDS = 8
 LOG_PREFIX = "[Monitor]"
+LOG_FILE = Path(__file__).resolve().parents[1] / "MonitorLogs.txt"
 
 
 def log_message(message):
     # Add a timestamp so logs are easier to read and debug.
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{timestamp} {LOG_PREFIX} {message}")
+    full_message = f"{timestamp} {LOG_PREFIX} {message}"
+    print(full_message)
+
+    # Persist all monitor logs to a text file for later review.
+    with LOG_FILE.open("a", encoding="utf-8") as log_file:
+        log_file.write(full_message + "\n")
 
 
 def log_exception(message):

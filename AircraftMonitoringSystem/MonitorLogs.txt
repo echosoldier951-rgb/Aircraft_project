@@ -1,0 +1,94 @@
+2026-06-29 20:19:01 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:02 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:03 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:04 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:05 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:06 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:06 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:07 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:07 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:08 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:08 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:09 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:09 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:10 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:10 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:11 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:11 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:12 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:12 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:13 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:13 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:14 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:14 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:15 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:15 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=10.28 expected min=10.9 max=14.7
+2026-06-29 20:19:16 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:17 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:18 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:19 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:20 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:22 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:23 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:24 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:25 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:26 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:27 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:28 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:28 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:29 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:29 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:30 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:30 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:31 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:31 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:32 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:32 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:33 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:33 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:34 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:34 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:35 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:35 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:36 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:36 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:37 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:37 [Monitor] EXCEPTION Flight JK7890: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 20:19:38 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:39 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:40 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:41 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:42 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:43 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:44 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:45 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:47 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:48 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:49 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:49 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:50 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:50 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:51 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:51 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:52 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:52 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:53 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:53 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:54 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:54 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:55 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:55 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:56 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:56 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:57 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:57 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:58 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:19:58 [Monitor] EXCEPTION Flight UV9753: Cabin Pressure current=15.08 expected min=10.9 max=14.7
+2026-06-29 20:19:59 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:20:00 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:20:01 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:20:02 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:20:03 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:20:04 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:20:05 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 20:20:06 [Monitor] Calling API http://127.0.0.1:5000/monitor-data

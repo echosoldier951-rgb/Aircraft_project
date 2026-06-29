@@ -3,6 +3,19 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $root
 
+$logFilesToClear = @(
+    'MonitorLogs.txt',
+    'TriggerNotifications.txt'
+)
+
+foreach ($logFile in $logFilesToClear) {
+    $logPath = Join-Path $root $logFile
+    if (Test-Path $logPath) {
+        Clear-Content -Path $logPath
+        Write-Host "Cleared log file: $logFile"
+    }
+}
+
 function Get-RunningPythonScriptProcess {
     param(
         [Parameter(Mandatory = $true)]
@@ -73,3 +86,6 @@ Start-PythonScript -ScriptPath 'applications/events_simulator.py' -DisplayName '
 Write-Host 'Waiting 8 seconds before starting Monitor poller...'
 Start-Sleep -Seconds 8
 Start-PythonScript -ScriptPath 'applications/monitor.py' -DisplayName 'Monitor poller'
+Write-Host 'Waiting 12 seconds before starting Trigger notifications...'
+Start-Sleep -Seconds 12
+Start-PythonScript -ScriptPath 'applications/trigger_notifications.py' -DisplayName 'Trigger notifications'
