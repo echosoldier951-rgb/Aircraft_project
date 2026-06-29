@@ -75,6 +75,8 @@ def evaluate_cabin_pressure(flight_data, parameters):
                 "error_type": "Cabin Pressure",
                 "message": f"Flight {flight_number}: Cabin Pressure current=None expected min={minimum} max={maximum}",
                 "simple_status": flight_data.get("Simple Status"),
+                "recorded_value": None,
+                "issue_description": "Cabin pressure reading is missing and cannot be validated against safe operational range.",
             }
         ]
 
@@ -85,6 +87,8 @@ def evaluate_cabin_pressure(flight_data, parameters):
                 "error_type": "Cabin Pressure",
                 "message": f"Flight {flight_number}: Cabin Pressure current={cabin_pressure} expected min={minimum} max={maximum}",
                 "simple_status": flight_data.get("Simple Status"),
+                "recorded_value": cabin_pressure,
+                "issue_description": "Cabin pressure is outside the configured safe operational range.",
             }
         ]
 
@@ -114,6 +118,8 @@ def evaluate_autopilot_status(flight_data, parameters):
                 "error_type": "Autopilot Status",
                 "message": f"Flight {flight_number}: Autopilot Status current={autopilot_status} expected={expected_status} for status={simple_status}",
                 "simple_status": simple_status,
+                "recorded_value": autopilot_status,
+                "issue_description": f"Autopilot status does not match the required state ({expected_status}) for flight status {simple_status}.",
             }
         ]
 
@@ -137,6 +143,8 @@ def evaluate_wifi_usage(flight_data, parameters):
                 "error_type": "WiFi Usage",
                 "message": f"Flight {flight_number}: WiFi Usage current={wifi_usage} expected min=1 for status={simple_status}",
                 "simple_status": simple_status,
+                "recorded_value": wifi_usage,
+                "issue_description": "Abnormal system usage pattern detected: Wi-Fi usage should be active but is zero.",
             }
         ]
 
@@ -147,6 +155,8 @@ def evaluate_wifi_usage(flight_data, parameters):
                 "error_type": "WiFi Usage",
                 "message": f"Flight {flight_number}: WiFi Usage current={wifi_usage} expected max=0 for status={simple_status}",
                 "simple_status": simple_status,
+                "recorded_value": wifi_usage,
+                "issue_description": "Abnormal system usage pattern detected: Wi-Fi activity is present when it should be disabled.",
             }
         ]
 
@@ -172,6 +182,9 @@ def build_notification_payload(new_alert, active_for_flight):
         "simple_status": new_alert.get("simple_status"),
         "new_error_type": new_alert["error_type"],
         "new_error_message": new_alert["message"],
+        "triggered_parameter": new_alert["error_type"],
+        "recorded_value": new_alert.get("recorded_value"),
+        "issue_description": new_alert.get("issue_description", new_alert.get("message")),
         "active_errors_for_flight": [
             {
                 "error_type": incident["error_type"],

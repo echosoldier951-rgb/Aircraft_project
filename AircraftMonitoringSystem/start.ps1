@@ -8,11 +8,23 @@ $logFilesToClear = @(
     'TriggerNotifications.txt'
 )
 
+$stateFilesToRemove = @(
+    '.email_trigger_state'
+)
+
 foreach ($logFile in $logFilesToClear) {
     $logPath = Join-Path $root $logFile
     if (Test-Path $logPath) {
         Clear-Content -Path $logPath
         Write-Host "Cleared log file: $logFile"
+    }
+}
+
+foreach ($stateFile in $stateFilesToRemove) {
+    $statePath = Join-Path $root $stateFile
+    if (Test-Path $statePath) {
+        Remove-Item -Path $statePath -Force
+        Write-Host "Removed state file: $stateFile"
     }
 }
 
@@ -57,6 +69,84 @@ function Start-PythonScript {
     Write-Host "Started $DisplayName (PID $($startedProcess.Id))."
 }
 
+function Start-PythonScriptInTerminal {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ScriptPath,
+
+        [Parameter(Mandatory = $true)]
+        [string]$DisplayName,
+
+        [string[]]$Arguments = @()
+    )
+
+    $resolvedScriptPath = (Resolve-Path $ScriptPath).Path
+    $argumentList = @($Arguments + @($resolvedScriptPath))
+
+    Write-Host "Running $DisplayName in current terminal (Ctrl+C to stop)..."
+    & $python.Source @argumentList
+}
+
+function Start-GreenMailServer {
+    $dockerBinPath = 'C:\Program Files\Docker\Docker\resources\bin'
+    if ((Test-Path $dockerBinPath) -and (-not ($env:Path -split ';' | Where-Object { $_ -eq $dockerBinPath }))) {
+        $env:Path = "$dockerBinPath;$env:Path"
+    }
+
+    $docker = Get-Command docker -ErrorAction SilentlyContinue
+    $dockerExe = $null
+
+    if ($docker) {
+        if ($docker.Source) {
+            $dockerExe = $docker.Source
+        }
+        elseif ($docker.Path) {
+            $dockerExe = $docker.Path
+        }
+    }
+
+    if (-not $dockerExe) {
+        $dockerExePath = Join-Path $dockerBinPath 'docker.exe'
+        if (Test-Path $dockerExePath) {
+            $dockerExe = $dockerExePath
+        }
+    }
+
+    if (-not $dockerExe) {
+        Write-Host 'Docker was not found on PATH. GreenMail cannot start, so SMTP/IMAP will fail.'
+        Write-Host 'Install Docker Desktop and run this PDF-aligned command manually:'
+        Write-Host 'docker run --rm --name greenmail-imap-lab -p 3025:3025 -p 3110:3110 -p 3143:3143 -p 8080:8080 -e GREENMAIL_OPTS="-Dgreenmail.setup.test.all -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.users=student:password@student.local -Dgreenmail.verbose" greenmail/standalone:2.1.8'
+        return
+    }
+
+    $containerName = 'greenmail-imap-lab'
+    $existingContainerIdRaw = & $dockerExe ps -aq -f "name=^$containerName$"
+    $existingContainerId = if ($existingContainerIdRaw) { $existingContainerIdRaw.Trim() } else { '' }
+
+    if ($existingContainerId) {
+        & $dockerExe rm -f $containerName | Out-Null
+        Write-Host "Removed existing GreenMail container: $containerName"
+    }
+
+    $greenmailOpts = '-Dgreenmail.setup.test.all -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.users=student:password@student.local -Dgreenmail.verbose'
+
+    & $dockerExe run -d --rm `
+        --name $containerName `
+        -p 3025:3025 `
+        -p 3110:3110 `
+        -p 3143:3143 `
+        -p 8080:8080 `
+        -e GREENMAIL_OPTS=$greenmailOpts `
+        greenmail/standalone:2.1.8 | Out-Null
+
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Started GreenMail container: $containerName (SMTP 3025, IMAP 3143, POP3 3110, Web/API 8080)"
+    }
+    else {
+        Write-Host 'Failed to start GreenMail container. Continuing without mail server startup.'
+    }
+}
+
 $python = Get-Command python -ErrorAction SilentlyContinue
 if (-not $python) {
     $python = Get-Command py -ErrorAction SilentlyContinue
@@ -65,6 +155,8 @@ if (-not $python) {
 if (-not $python) {
     throw 'Python was not found on PATH.'
 }
+
+Start-GreenMailServer
 
 $postgresService = Get-Service -Name 'postgresql*','PostgreSQL*' -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($postgresService) {
@@ -89,3 +181,15 @@ Start-PythonScript -ScriptPath 'applications/monitor.py' -DisplayName 'Monitor p
 Write-Host 'Waiting 12 seconds before starting Trigger notifications...'
 Start-Sleep -Seconds 12
 Start-PythonScript -ScriptPath 'applications/trigger_notifications.py' -DisplayName 'Trigger notifications'
+
+$emailTriggerInTerminal = $true
+if ($env:EMAIL_TRIGGER_IN_TERMINAL) {
+    $emailTriggerInTerminal = $env:EMAIL_TRIGGER_IN_TERMINAL.Trim().ToLower() -in @('1', 'true', 'yes', 'on')
+}
+
+if ($emailTriggerInTerminal) {
+    Start-PythonScriptInTerminal -ScriptPath 'applications/email_trigger_from_log.py' -DisplayName 'Email trigger from notification log'
+}
+else {
+    Start-PythonScript -ScriptPath 'applications/email_trigger_from_log.py' -DisplayName 'Email trigger from notification log'
+}
