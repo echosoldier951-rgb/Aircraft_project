@@ -7773,3 +7773,37 @@
 2026-06-30 14:27:25 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
 2026-06-30 14:27:26 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
 2026-06-30 14:27:28 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:29 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:30 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:31 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:32 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:33 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:34 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:35 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:35 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:36 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:36 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:37 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:37 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:38 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:38 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:39 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:39 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:40 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:40 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:41 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:41 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:42 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:42 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:43 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:43 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:44 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:44 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=10.43 expected min=10.9 max=14.7
+2026-06-30 14:27:45 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:46 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:47 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:48 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:49 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:50 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:51 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-30 14:27:52 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
