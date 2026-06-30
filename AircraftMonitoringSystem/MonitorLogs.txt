@@ -2727,3 +2727,11 @@
 2026-06-29 21:36:04 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
 2026-06-29 21:36:05 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
 2026-06-29 21:36:05 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:06 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:06 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:07 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:07 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:08 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:08 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:09 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:09 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
