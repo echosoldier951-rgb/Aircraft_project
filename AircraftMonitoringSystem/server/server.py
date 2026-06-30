@@ -12,7 +12,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 
-# Use Flask's standard project layout: templates/ for HTML and static/ for assets.
+#use flask's standard project layout: templates/ for HTML and static/ for assets
 app = Flask(
     __name__,
     template_folder=str(BASE_DIR / "templates"),
@@ -44,7 +44,7 @@ def add_cors_headers(response):
 
 
 def get_db_connection():
-    # Create a new PostgreSQL connection using env vars (with safe local defaults).
+    #create a new PostgreSQL connection using env vars (with safe local defaults)
     return psycopg2.connect(
         host=os.getenv("DB_HOST", "localhost"),
         port=os.getenv("DB_PORT", "5432"),
@@ -55,7 +55,7 @@ def get_db_connection():
 
 
 def initialize_database():
-    # Run schema.sql on startup so required tables exist.
+    #run schema.sql on startup so required tables exist
     log_print("Schema path:", SCHEMA_FILE)
     log_print("Schema exists:", SCHEMA_FILE.exists())
 
@@ -74,7 +74,7 @@ def initialize_database():
 
 
 def format_flight(row):
-    # Convert database tuple to the API response shape expected by dashboards.
+    #convert database tuple to the API response shape expected by dashboards
     push_back_time = row[6]
 
     return {
@@ -89,7 +89,7 @@ def format_flight(row):
 
 
 def format_monitor_data(row):
-    # Convert joined flight/event tuples into one flat monitoring payload.
+    #convert joined flight/event tuples into one flat monitoring payload
     push_back_time = row[6]
 
     return {
@@ -107,7 +107,7 @@ def format_monitor_data(row):
 
 
 def get_flight_by_number(flight_number):
-    # Fetch a single flight row by its unique flight number.
+    #fetch a single flight row by its unique flight number
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(
@@ -134,7 +134,7 @@ def get_flight_by_number(flight_number):
 
 
 def update_flight(data):
-    # Update one flight and return the updated row.
+    #update one flight and return the updated row
     flight_number = str(data.get("Flight Number", "")).strip()
     simple_status = data.get("Simple Status")
     if simple_status is None:
@@ -188,7 +188,7 @@ def update_flight(data):
 
 
 def get_all_events():
-    # Return all events sorted by flight number for stable dashboard rendering.
+    #return all events sorted by flight number for stable dashboard rendering
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -206,7 +206,7 @@ def get_all_events():
 
 
 def get_all_monitor_data():
-    # Return joined flight and event data sorted by flight number.
+    #return joined flight and event data sorted by flight number
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(
@@ -234,7 +234,8 @@ def get_all_monitor_data():
 
 
 def upsert_event(data):
-    # Validate input and insert/update one event row.
+    #validate input and insert and update one event row
+    #come back to clean this up
     flight_number = str(data.get("Flight Number", "")).strip()
     autopilot_status = str(data.get("Autopilot Status", "")).strip().upper()
 
@@ -314,7 +315,7 @@ def events_dashboard():
 
 @app.route("/flight", methods=["GET"])
 def get_flight():
-    # Read one flight using query string: /flight?flight_number=AC101
+    #read one flight using query string /flight?flight_number=AC101
     flight_number = request.args.get("flight_number", "").strip()
 
     if not flight_number:
@@ -333,7 +334,7 @@ def get_flight():
 
 @app.route("/updateFlightInfo", methods=["PUT"])
 def put_flight():
-    # Accept JSON body and persist the flight update.
+    #accept json body and persist the flight update
     data = request.get_json(silent=True)
 
     if not data:
@@ -351,7 +352,7 @@ def put_flight():
     return jsonify(updated_data), 202
 @app.route("/flight-file", methods=["GET"])
 def get_flight_file():
-    # Legacy/file-based fallback endpoint (separate from database endpoints).
+    #this fallback endppoint is legacy (separate from database endpoints)
     try:
         with open(BASE_DIR / "flight_data.json", "r") as file:
             data = json.load(file)
@@ -365,7 +366,7 @@ def get_flight_file():
 
 @app.route("/events", methods=["GET"])
 def get_events():
-    # Convert raw DB rows to JSON-friendly dictionaries.
+    #this convert raw DB rows to json dictionaries.
     try:
         rows = get_all_events()
 
@@ -384,10 +385,10 @@ def get_events():
         log_exception("Unable to load event data: %s", exc)
         return jsonify({"error": "Unable to load event data"}), 500
 
-
+# check up on functionallity of this
 @app.route("/monitor-data", methods=["GET"])
 def get_monitor_data():
-    # Return full joined flight and event data for monitoring clients.
+    #return full joined flight and event data for monitoring clients
     try:
         rows = get_all_monitor_data()
         monitor_data = [format_monitor_data(row) for row in rows]
@@ -399,7 +400,7 @@ def get_monitor_data():
 
 @app.route("/events-update", methods=["PUT", "POST"])
 def put_event_update():
-    # Update or insert event telemetry for a flight.
+    #update or insert event data for a flight
     data = request.get_json(silent=True)
 
     if not data:
@@ -417,7 +418,7 @@ def put_event_update():
     return jsonify(updated_event), 200
 
 
-# Debug route for CSS
+# debug route for css
 @app.route("/test")
 def test():
     return {
@@ -429,6 +430,6 @@ def test():
 
 
 if __name__ == "__main__":
-    # One-time startup tasks before serving requests.
+    # Onetime startup tasks before serving requests
     initialize_database()
     app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)

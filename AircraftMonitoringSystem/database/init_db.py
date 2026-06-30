@@ -4,7 +4,7 @@ from pathlib import Path
 import psycopg2
 from dotenv import load_dotenv
 
-# Load .env file if present
+#load .env file if present
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -23,7 +23,7 @@ def initialize_database():
             "DB_PASSWORD is not set. Create a .env file or set the DB_PASSWORD environment variable."
         )
 
-    # Connect to the default postgres database
+    #connect to the default postgres database
     conn = psycopg2.connect(
         host=db_host,
         port=db_port,
@@ -49,7 +49,7 @@ def initialize_database():
     finally:
         conn.close()
 
-    # Connect to the application database
+    #connect to the application database
     target_conn = psycopg2.connect(
         host=db_host,
         port=db_port,
