@@ -2735,3 +2735,95 @@
 2026-06-29 21:36:08 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
 2026-06-29 21:36:09 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
 2026-06-29 21:36:09 [Monitor] EXCEPTION Flight CC6401: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:10 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:11 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:12 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:13 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:14 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:15 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:16 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:17 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:18 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:19 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:19 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:20 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:20 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:21 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:21 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:22 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:22 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:23 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:23 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:24 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:25 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:26 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:26 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:27 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:27 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:28 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:28 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:29 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:29 [Monitor] EXCEPTION Flight YZ7531: Cabin Pressure current=15.74 expected min=10.9 max=14.7
+2026-06-29 21:36:30 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:31 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:32 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:33 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:34 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:35 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:36 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:37 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:38 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:39 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:40 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:41 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:41 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:42 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:42 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:43 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:43 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:44 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:44 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:45 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:45 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:46 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:46 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:47 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:47 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:48 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:48 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:49 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:49 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:50 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:50 [Monitor] EXCEPTION Flight BB9174: Autopilot Status current=OFF expected=ON for status=Cruise
+2026-06-29 21:36:51 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:52 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:54 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:55 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:56 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:57 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:58 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:36:59 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:00 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:01 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:02 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:02 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:03 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:03 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:04 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:04 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:05 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:05 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:06 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:06 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:07 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:07 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:08 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:08 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:09 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:09 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:10 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:10 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:11 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:11 [Monitor] EXCEPTION Flight QR2468: Autopilot Status current=ON expected=OFF for status=Taxiing
+2026-06-29 21:37:12 [Monitor] Calling API http://127.0.0.1:5000/monitor-data
+2026-06-29 21:37:13 [Monitor] Calling API http://127.0.0.1:5000/monitor-data

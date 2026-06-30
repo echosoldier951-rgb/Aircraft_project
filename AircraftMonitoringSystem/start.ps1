@@ -11,7 +11,7 @@ $logFilesToClear = @(
 $stateFilesToRemove = @(
     '.email_trigger_state'
 )
-
+# deletes log file data on startup 
 foreach ($logFile in $logFilesToClear) {
     $logPath = Join-Path $root $logFile
     if (Test-Path $logPath) {
@@ -19,7 +19,7 @@ foreach ($logFile in $logFilesToClear) {
         Write-Host "Cleared log file: $logFile"
     }
 }
-
+#same as the above but for the state file
 foreach ($stateFile in $stateFilesToRemove) {
     $statePath = Join-Path $root $stateFile
     if (Test-Path $statePath) {
